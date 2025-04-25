@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
     async_sessionmaker,
     async_scoped_session,
+    AsyncSession,
 )
 
 
@@ -14,10 +15,17 @@ sessionmaker = async_sessionmaker(
 )
 
 
-def get_scoped_session():
+async def get_scoped_session() -> AsyncSession:    
     return async_scoped_session(session_factory=sessionmaker, scopefunc=current_task)
 
 
-async def session_dep():
+async def session_dep() -> AsyncSession:
     async with sessionmaker() as session:
         yield session
+    await session.close()
+
+
+async def scoped_session_dep() -> AsyncSession:
+    scoped_session = get_scoped_session()
+    yield scoped_session
+    await scoped_session.close()
