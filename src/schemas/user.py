@@ -15,5 +15,14 @@ class User(UserBase):
     id: int
 
 
-class UserCreate(BaseModel):
+class UserCreate(UserBase):
     pass
+
+
+class UserUpdate(UserCreate):
+    pass
+
+class UserUpdatePartial(UserCreate):
+    email: Annotated[str, EmailStr] | None = None
+    name: Annotated[str, MinLen(3), MaxLen(12)] | None = None
+    password: Annotated[str, MinLen(8)] | None = None
