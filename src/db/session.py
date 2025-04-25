@@ -4,13 +4,14 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
     async_sessionmaker,
     async_scoped_session,
-    AsyncSession,
 )
 
 
 engine = create_async_engine(settings.db_url, echo=True)
 
-sessionmaker = async_sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
+sessionmaker = async_sessionmaker(
+    bind=engine, autocommit=False, autoflush=False, expire_on_commit=False
+)
 
 
 def get_scoped_session():
@@ -18,8 +19,5 @@ def get_scoped_session():
 
 
 async def session_dep():
-    session = sessionmaker()
-    try:
+    async with sessionmaker() as session:
         yield session
-    finally:
-        await session.close()

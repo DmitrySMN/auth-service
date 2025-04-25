@@ -1,8 +1,8 @@
 import uvicorn
 from fastapi import FastAPI
-from db.session import *
-from db.models import Base
 from contextlib import asynccontextmanager
+from db.session import *
+from db.models.user import Base
 from api.v1 import router as user_router
 from core.config import settings
 
